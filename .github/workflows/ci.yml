@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Ruff + mypy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Sync deps
+        run: uv sync --group dev
+      - name: Lint
+        run: uv run ruff check src tests
+      - name: Type check
+        run: uv run mypy -p algo_discovery
+
+  test:
+    name: Pytest (3.10, 3.12, 3.13)
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Sync deps
+        run: uv sync --group dev
+      - name: Test
+        run: uv run pytest -q
