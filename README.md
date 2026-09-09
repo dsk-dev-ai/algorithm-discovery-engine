@@ -1,5 +1,8 @@
 # algorithm-discovery-engine
 
+[![CI](https://github.com/dsk-dev-ai/algorithm-discovery-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Experimental framework for **automated mathematical pattern discovery**: it
 takes an integer sequence, generates candidate hypotheses (arithmetic and
 geometric progressions, polynomial fits, recurrences, structural invariants),
