@@ -1,12 +1,31 @@
 [project]
 name = "algorithm-discovery-engine"
-version = "0.2.0"
-description = "Multi-language algorithms & data structures solving engine (Java, C++, Rust, Python) plus automated mathematical pattern discovery."
+version = "0.3.0"
+description = "Multi-language algorithms & data structures solving engine (Java, C++, Rust, Python) with cross-language benchmarks and a local AI synthesizer that rediscovers algorithms from examples."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "dsk-dev-ai" }]
-keywords = ["algorithms", "data-structures", "java", "cpp", "rust", "python", "learning", "benchmark", "algorithm-discovery", "sequence-analysis"]
+keywords = [
+    "algorithms",
+    "data-structures",
+    "algorithm-discovery",
+    "automated-discovery",
+    "ai",
+    "machine-learning",
+    "java",
+    "cpp",
+    "rust",
+    "python",
+    "learning",
+    "education",
+    "benchmark",
+    "synthesizer",
+    "developer-tools",
+    "open-source",
+    "scientific-computing",
+    "sequence-analysis",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",

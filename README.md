@@ -1,197 +1,202 @@
+<div align="center">
+
 # algorithm-discovery-engine
 
+**One catalog, four languages, zero dependencies — and a synthesizer that rediscovers the algorithms for you.**
+
 [![CI](https://github.com/dsk-dev-ai/algorithm-discovery-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Stars](https://img.shields.io/github/stars/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=github&logoColor=white)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/stargazers)
+[![Forks](https://img.shields.io/github/forks/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=github&logoColor=white)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/forks)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Last commit](https://img.shields.io/github/last-commit/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=git&logoColor=white)]()
 [![Sponsor](https://img.shields.io/badge/%E2%9D%A4%EF%B8%8F-Sponsor-red?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/dsk-dev-ai)
 
-**A multi-language algorithms & data structures solving engine.** The same
-catalog of problems and data structures is implemented, tested, and benchmarked
-in **Java**, **C++**, **Rust**, and **Python** (regular + advanced tiers), with a
-single `catalog/problems.json` as the source of truth and identical generated
-test vectors across every language.
+**Python** · **Java** · **C++** · **Rust**
 
-It also retains the original **automated mathematical pattern discovery**
-framework: feed it an integer sequence and it generates, scores, and ranks
-candidate hypotheses (arithmetic/geometric progressions, polynomial fits,
-recurrences, structural invariants) with optional next-term predictions.
+</div>
 
-## The solving engine
+---
+
+**The same algorithms and data structures, solved, tested, and benchmarked in Java, C++,
+Rust, and Python**, with one `catalog/problems.json` as the single source of truth and
+byte-identical generated test vectors across every language. On top sits a local
+**algorithm synthesizer** that discovers verified algorithms (Kadane, buy-and-sell, jump
+game) from input/output examples alone — no APIs, no model calls.
+
+## Features
+
+- **Multi-language solving engine** — 10 algorithms + 6 data structures implemented in
+  Java, C++17, Rust, and Python (regular + optimized advanced tiers).
+- **Cross-language benchmarks** — a single harness times all four tiers; compare
+  strategies (Java's hash-map two-sum vs. the quadratic scans in C++/Rust).
+- **Local algorithm synthesizer** — grammar-based search + strategy templates that
+  rediscover known algorithms and surface novel ones, fuzz-verified out-of-sample.
+- **Automated mathematical pattern discovery** — the original engine: feed in a
+  sequence, get ranked hypotheses (arithmetic, geometric, quadratic, Fibonacci-like) and
+  next-term predictions.
+- **Zero dependencies per language** — no framework, no package, no JIT magic; pure
+  standard library in all four tiers.
+- **Generated-then-committed test vectors** — identical tests enforced by CI in every
+  language; a single `--check` keeps them in sync with the catalog.
+- **CI-green by default** — grid of Python 3.10–3.13, Java 21, GCC C++17, stable Rust,
+  plus a discovery-smoke job.
+
+## Quick start
+
+```sh
+git clone https://github.com/dsk-dev-ai/algorithm-discovery-engine.git
+cd algorithm-discovery-engine
+
+python engine/runner.py test        # build + run the catalog suite in all 4 languages
+python engine/runner.py bench       # benchmark all tiers, side by side
+python engine/runner.py discover    # synthesize + verify algorithms from examples
+```
+
+No install required — Python ≥ 3.10 and (for the non-Python tiers) a JDK, a C++17
+compiler, and the Rust toolchain.
+
+## The multi-language engine
 
 ### Catalog
 
-`catalog/problems.json` is the single source of truth. Every problem/structure
-carries shared test vectors that are checked in **all four languages**.
+`catalog/problems.json` is the source of truth. Every algorithm and structure carries a
+shared test vector set asserted in **all four languages**.
 
-**Algorithms (10):** `two_sum`, `binary_search`, `merge_sort`, `quick_sort`,
-`max_subarray`, `lcs` (longest common subsequence), `knapsack_01`,
-`edit_distance`, `graph_bfs`, `graph_dfs`.
-
-**Data structures (6):** `stack`, `queue`, `linked_list`, `bst` (binary search
-tree), `trie`, `min_heap`.
+| Algorithms (10)                                          | Data structures (6)                              |
+| -------------------------------------------------------- | ------------------------------------------------ |
+| `two_sum`, `binary_search`, `merge_sort`, `quick_sort`    | `stack`, `queue`, `linked_list`, `bst`           |
+| `max_subarray`, `lcs`, `knapsack_01`, `edit_distance`     | `trie`, `min_heap`                               |
+| `graph_bfs`, `graph_dfs`                                  |                                                  |
 
 ### Language tiers
 
-| Tier      | Location                        | Approach                                            |
-| --------- | ------------------------------- | --------------------------------------------------- |
-| Java      | `languages/java/`               | OO references; primary reference implementations    |
-| C++       | `languages/cpp/`                | modern C++17 (RAII, iterators, no dependencies)     |
-| Rust      | `languages/rust/`               | ownership-safe implementations, zero dependencies   |
-| Python    | `src/ads/`                      | regular (`problems`/`structures`) + advanced (`*_advanced`, optimized DP/graph/iterative comments, mypy strict) |
-
-The existing `src/algo_discovery` package (65 tests) is preserved as the
-advanced Python pattern-discovery showcase.
-
-### Run everything
-
-```sh
-python engine/gen_tests.py        # (re)generate identical test vectors + --check to verify
-python engine/runner.py test      # build + run the catalog suite in all 4 languages
-python engine/runner.py build     # compile every tier without executing
-python engine/runner.py bench     # benchmark all tiers and print a comparison table
-python engine/runner.py check     # assert committed vectors are in sync with the catalog
-python engine/runner.py discover  # run the local algorithm synthesizer (smoke pass)
+```mermaid
+flowchart LR
+    C[ catalog/problems.json ] --> G[ engine/gen_tests.py ]
+    G --> J[Java tests] & P[Python tests] & R[Rust tests] & X[C++ tests]
+    J -. reference impl .-> P
 ```
 
-Sample benchmark output (microseconds, lower is better):
+| Tier   | Location                 | Approach                                             |
+| ------ | ------------------------ | ---------------------------------------------------- |
+| Java   | `languages/java/`        | OO reference implementations                         |
+| C++    | `languages/cpp/`         | modern C++17, RAII, iterators                        |
+| Rust   | `languages/rust/`        | ownership-safe, zero dependencies                    |
+| Python | `src/ads/`               | regular + advanced (`*_advanced`, mypy strict)       |
+
+### Sample benchmark (microseconds, lower is better)
 
 ```
 algorithm             Python        Java         C++        Rust
 merge_sort           928,850      85,358      66,972      39,647
 quick_sort           702,918      41,562      22,942      17,610
 max_subarray         444,168      17,881       9,702          78
-two_sum               32,847      30,393     582,269     659,066
-lcs                  901,711      53,888      21,300      24,979
-knapsack_01            1,595      25,732      17,617      23,390
 ```
 
-> Each language may choose a different algorithm strategy for the same problem
-> (e.g. Java's two-sum uses a hash map while C++/Rust use the quadratic scan),
-> so raw times are a showcase of trade-offs, not an exact contest.
+> Languages may pick different strategies for the same problem (Java's `two_sum` uses a
+> hash map; C++/Rust use a quadratic scan) — the table is a trade-off showcase, not an
+> exact contest.
 
-### Per-language testing
+## The synthesizer (the interesting part)
+
+`src/synth/` searches for candidate algorithms from input/output examples and verifies
+them out-of-sample before reporting anything.
+
+- **Grammar search** (`scan`): enumerates single-pass "scanner" programs until one
+  matches the curated examples *and* 60 fuzzed inputs against an independent oracle.
+  Kadane, buy-and-sell, and jump-game fall out of examples alone.
+- **Strategy templates** (`vote`, `seen`, `fib`, `circular-kadane`): Boyer-Moore
+  voting, hash-set membership, Fibonacci pumping, circular Kadane — all still
+  fuzz-verified.
+- **Novelty classification**: `rediscovered` (already in the catalog) vs.
+  `new-to-catalog` (a candidate worth porting to the four tiers).
+
+Current smoke run: **7 targets · 7 verified · 0 rejected**.
 
 ```sh
-# Python
-uv run pytest -q
-uv run ruff check src tests
-uv run mypy -p algo_discovery -p ads -p synth
+uv run python -m synth discover --smoke   # ~2 min, CI-friendly
+uv run python -m synth discover           # full pass
+uv run python -m synth discover --print   # include full report JSON
+```
 
-# Java
-cd languages/java && javac -d out $(find src -name '*.java') && java -cp out ads.TestRunner
+Output lands in `catalog/discoveries/`: `report.json`, `report.md`, and runnable
+`solutions/*.py`.
 
-# C++
-cd languages/cpp && g++ -std=c++17 -O2 -I include tests/test_runner.cpp -o build/runner && ./build/runner
+A discovered jump-game scanner (verified on examples + fuzz):
 
-# Rust
-cd languages/rust && cargo test --quiet
-
-# Local synthesis
-uv run python -m synth discover --smoke   # CI-friendly reduced-budget pass
-uv run python -m synth discover           # full pass (>20k candidates/target)
+```python
+def discovered_jump_game(arg):
+    s0 = 0
+    s1 = 0
+    for i, x in enumerate(arg):
+        s1 = max(s1, i - s0)   # how far the current reach overshoots index i
+        s0 = max(s0, i + x)    # extend the reach
+    return s1 == 0
 ```
 
 ## Pattern discovery (original framework)
 
-### Install & use
-
 ```python
 from algo_discovery import DiscoveryEngine
 
-engine = DiscoveryEngine()
-
-# Squares
-result = engine.discover((1, 4, 9, 16, 25))
+result = DiscoveryEngine().discover((1, 4, 9, 16, 25))
 print(result.best.name)       # "quadratic"
 print(result.best.prediction) # 36
-
-# Subset of hypotheses only
-from algo_discovery.engine import hypotheses_by_name
-engine = DiscoveryEngine(hypotheses=hypotheses_by_name(["arithmetic", "fibonacci-like"]))
 ```
 
-- **10 built-in hypotheses**: constant, arithmetic, geometric, quadratic,
-  cubic, powers-of-two, Fibonacci-like, affine linear recurrence, prime, and
-  alternating-sign — each yields a confidence, an explanation, and a
-  predicted next term when it fits.
-- **Feature extraction**: differences, ratios, sign patterns, monotonicity,
-  palindromicity, growth rate, gcd, and a normalized numeric vector.
+10 built-in hypotheses (arithmetic, geometric, quadratic, cubic, powers-of-two,
+Fibonacci-like, affine recurrences, prime, alternating-sign, constant) with confidence,
+explanation, and next-term prediction.
 
 ```sh
 uv run python -m algo_discovery 1 4 9 16
 ```
 
-## Local algorithm synthesis (discovery)
-
-`src/synth/` searches for candidate algorithms from input/output examples and
-verifies them out-of-sample before reporting any discovery. It is fully local —
-no external APIs, no model calls.
-
-- **Grammar search** (`scan` kind): enumerates single-pass "scanner" programs
-  (a handful of running state variables updated per element) until one matches
-  the curated examples *and* survives fuzz verification against an independent
-  reference oracle. Kadane, buy-and-sell, and jump-game style algorithms
-  emerge from examples alone.
-- **Strategy templates** (`vote`, `seen`, `fib`, `template:circular-kadane`):
-  parametric skeletons (Boyer-Moore voting, hash-set membership, Fibonacci
-  pumping, circular Kadane) that are still fuzz-verified like everything else.
-- **Novelty classification**: every verified candidate is tagged
-  `rediscovered` (already in `catalog/problems.json`) or `new-to-catalog`
-  (a candidate worth porting to the four language tiers).
-
-Targets live in `catalog/discovery_targets.json`; each entry has curated I/O
-examples plus an oracle + fuzz generator in `src/synth/corpus.py`.
-
-```sh
-uv run python -m synth discover --smoke    # ~2 min, CI-friendly
-uv run python -m synth discover            # full pass
-```
-
-Output is written to `catalog/discoveries/`:
-
-- `report.json` — machine-readable results per target
-- `report.md` — human-readable table + verified sources
-- `solutions/<id>.py` — runnable discovered algorithms
-
-The CLI exits non-zero if any target is rejected or missing, so it plugs
-straight into CI. The discovery pass is also exposed as
-`python engine/runner.py discover`.
-
 ## Development
-
-Requires Python ≥ 3.10 + [uv](https://docs.astral.sh/uv/), plus a JDK (≥ 17),
-a C++17 compiler, and the Rust toolchain for the non-Python tiers.
 
 ```sh
 uv sync --group dev
-uv run pytest -q
+uv run pytest -q          # 118 tests (catalog + synthesizer)
 uv run ruff check src tests
 uv run mypy -p algo_discovery -p ads -p synth
+python engine/runner.py check   # keep generated vectors in sync before committing
 ```
 
-Run `python engine/runner.py check` before committing to keep generated test
-vectors in sync with the catalog.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full checklist and how to add a new
+catalog problem or a new discovery target.
 
 ## Structure
 
 ```
-catalog/problems.json         single source of truth (tests + examples)
-catalog/discovery_targets.json  discovery targets (curated examples + oracle names)
-catalog/discoveries/          synthesizer reports + discovered solutions
-engine/gen_tests.py           generates identical test vectors per language
-engine/runner.py              build / test / benchmark / synthesize dispatcher
-src/ads/                      Python solving engine (regular + advanced)
-src/algo_discovery/           pattern-discovery framework (original)
-src/synth/                    local algorithm synthesizer (grammar + templates)
-languages/java/src/ads/       Java tier (+ TestRunner, Benchmark)
-languages/cpp/include/ads/    C++17 headers (+ tests/test_runner.cpp, bench/)
-languages/rust/src/           Rust tier (+ examples/benchmark.rs)
+catalog/problems.json            single source of truth (tests + examples)
+catalog/discovery_targets.json   discovery targets (curated examples + oracles)
+catalog/discoveries/             synthesizer reports + discovered solutions
+engine/gen_tests.py              generates identical test vectors per language
+engine/runner.py                 build / test / benchmark / synthesize dispatcher
+src/ads/                         Python solving engine (regular + advanced)
+src/algo_discovery/              pattern-discovery framework (original)
+src/synth/                       local algorithm synthesizer
+languages/java/src/ads/          Java tier (+ TestRunner, Benchmark)
+languages/cpp/include/ads/       C++17 headers (+ tests, bench)
+languages/rust/src/              Rust tier (+ examples/benchmark.rs)
 ```
+
+## Roadmap
+
+- Port `new-to-catalog` discoveries (buy-and-sell, jump game, circular Kadane) into the
+  four language tiers as first-class catalog problems.
+- Grow the discovery target corpus (graphs, DP, geometry) and tighten the synthesis
+  budget so full passes match CI time.
+- Add GitHub Actions generating the social-preview benchmark delta on every push.
 
 ## Sponsor
 
-algorithm-discovery-engine is built and maintained by [Darshan Kachare](https://github.com/dsk-dev-ai) through [NextGenAI Labs](https://github.com/sponsors/dsk-dev-ai).
+algorithm-discovery-engine is built and maintained by
+[Darshan Kachare](https://github.com/dsk-dev-ai) through
+[NextGenAI Labs](https://github.com/sponsors/dsk-dev-ai).
 
-Sponsorship supports development infrastructure, documentation, and long-term maintenance of this open-source platform.
+Sponsorship supports development infrastructure, documentation, and long-term
+maintenance of this open-source platform.
 
 <a href="https://github.com/sponsors/dsk-dev-ai">
   <img src="https://img.shields.io/badge/%E2%9D%A4%EF%B8%8F-Sponsor_on_GitHub-red?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor algorithm-discovery-engine"/>
