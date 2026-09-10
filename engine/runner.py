@@ -8,6 +8,7 @@ Commands:
     bench       Build and run each language's benchmark, then print a table.
     build       Compile every language tier (no execution).
     check       Verify committed test vectors are in sync with the catalog.
+    discover    Run the algorithm synthesizer (smoke pass, ~2 min).
 """
 
 from __future__ import annotations
@@ -191,6 +192,13 @@ def project(lang: str, pattern: str) -> list[str]:
     return files
 
 
+def cmd_discover_smoke() -> None:
+    check(
+        [sys.executable, "-m", "synth", "discover", "--smoke"],
+        ROOT, "synth discover --smoke", timeout=300,
+    )
+
+
 def main() -> None:
     if len(sys.argv) < 2:
         print(__doc__)
@@ -201,6 +209,7 @@ def main() -> None:
         "bench": cmd_bench,
         "build": cmd_build,
         "check": cmd_check,
+        "discover": cmd_discover_smoke,
     }
     handlers[command]()
 

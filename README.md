@@ -48,6 +48,7 @@ python engine/runner.py test      # build + run the catalog suite in all 4 langu
 python engine/runner.py build     # compile every tier without executing
 python engine/runner.py bench     # benchmark all tiers and print a comparison table
 python engine/runner.py check     # assert committed vectors are in sync with the catalog
+python engine/runner.py discover  # run the local algorithm synthesizer (smoke pass)
 ```
 
 Sample benchmark output (microseconds, lower is better):
@@ -72,7 +73,7 @@ knapsack_01            1,595      25,732      17,617      23,390
 # Python
 uv run pytest -q
 uv run ruff check src tests
-uv run mypy -p algo_discovery -p ads
+uv run mypy -p algo_discovery -p ads -p synth
 
 # Java
 cd languages/java && javac -d out $(find src -name '*.java') && java -cp out ads.TestRunner
@@ -82,6 +83,10 @@ cd languages/cpp && g++ -std=c++17 -O2 -I include tests/test_runner.cpp -o build
 
 # Rust
 cd languages/rust && cargo test --quiet
+
+# Local synthesis
+uv run python -m synth discover --smoke   # CI-friendly reduced-budget pass
+uv run python -m synth discover           # full pass (>20k candidates/target)
 ```
 
 ## Pattern discovery (original framework)
@@ -114,6 +119,42 @@ engine = DiscoveryEngine(hypotheses=hypotheses_by_name(["arithmetic", "fibonacci
 uv run python -m algo_discovery 1 4 9 16
 ```
 
+## Local algorithm synthesis (discovery)
+
+`src/synth/` searches for candidate algorithms from input/output examples and
+verifies them out-of-sample before reporting any discovery. It is fully local —
+no external APIs, no model calls.
+
+- **Grammar search** (`scan` kind): enumerates single-pass "scanner" programs
+  (a handful of running state variables updated per element) until one matches
+  the curated examples *and* survives fuzz verification against an independent
+  reference oracle. Kadane, buy-and-sell, and jump-game style algorithms
+  emerge from examples alone.
+- **Strategy templates** (`vote`, `seen`, `fib`, `template:circular-kadane`):
+  parametric skeletons (Boyer-Moore voting, hash-set membership, Fibonacci
+  pumping, circular Kadane) that are still fuzz-verified like everything else.
+- **Novelty classification**: every verified candidate is tagged
+  `rediscovered` (already in `catalog/problems.json`) or `new-to-catalog`
+  (a candidate worth porting to the four language tiers).
+
+Targets live in `catalog/discovery_targets.json`; each entry has curated I/O
+examples plus an oracle + fuzz generator in `src/synth/corpus.py`.
+
+```sh
+uv run python -m synth discover --smoke    # ~2 min, CI-friendly
+uv run python -m synth discover            # full pass
+```
+
+Output is written to `catalog/discoveries/`:
+
+- `report.json` — machine-readable results per target
+- `report.md` — human-readable table + verified sources
+- `solutions/<id>.py` — runnable discovered algorithms
+
+The CLI exits non-zero if any target is rejected or missing, so it plugs
+straight into CI. The discovery pass is also exposed as
+`python engine/runner.py discover`.
+
 ## Development
 
 Requires Python ≥ 3.10 + [uv](https://docs.astral.sh/uv/), plus a JDK (≥ 17),
@@ -123,7 +164,7 @@ a C++17 compiler, and the Rust toolchain for the non-Python tiers.
 uv sync --group dev
 uv run pytest -q
 uv run ruff check src tests
-uv run mypy -p algo_discovery -p ads
+uv run mypy -p algo_discovery -p ads -p synth
 ```
 
 Run `python engine/runner.py check` before committing to keep generated test
@@ -133,10 +174,13 @@ vectors in sync with the catalog.
 
 ```
 catalog/problems.json         single source of truth (tests + examples)
+catalog/discovery_targets.json  discovery targets (curated examples + oracle names)
+catalog/discoveries/          synthesizer reports + discovered solutions
 engine/gen_tests.py           generates identical test vectors per language
-engine/runner.py              build / test / benchmark dispatcher
+engine/runner.py              build / test / benchmark / synthesize dispatcher
 src/ads/                      Python solving engine (regular + advanced)
 src/algo_discovery/           pattern-discovery framework (original)
+src/synth/                    local algorithm synthesizer (grammar + templates)
 languages/java/src/ads/       Java tier (+ TestRunner, Benchmark)
 languages/cpp/include/ads/    C++17 headers (+ tests/test_runner.cpp, bench/)
 languages/rust/src/           Rust tier (+ examples/benchmark.rs)
