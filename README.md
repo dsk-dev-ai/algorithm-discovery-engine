@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/dsk-dev-ai/algorithm-discovery-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Sponsor](https://img.shields.io/badge/%E2%9D%A4%EF%B8%8F-Sponsor-red?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/dsk-dev-ai)
 
 **A multi-language algorithms & data structures solving engine.** The same
 catalog of problems and data structures is implemented, tested, and benchmarked
@@ -185,6 +186,18 @@ languages/java/src/ads/       Java tier (+ TestRunner, Benchmark)
 languages/cpp/include/ads/    C++17 headers (+ tests/test_runner.cpp, bench/)
 languages/rust/src/           Rust tier (+ examples/benchmark.rs)
 ```
+
+## Sponsor
+
+algorithm-discovery-engine is built and maintained by [Darshan Kachare](https://github.com/dsk-dev-ai) through [NextGenAI Labs](https://github.com/sponsors/dsk-dev-ai).
+
+Sponsorship supports development infrastructure, documentation, and long-term maintenance of this open-source platform.
+
+<a href="https://github.com/sponsors/dsk-dev-ai">
+  <img src="https://img.shields.io/badge/%E2%9D%A4%EF%B8%8F-Sponsor_on_GitHub-red?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor algorithm-discovery-engine"/>
+</a>
+
+---
 
 ## License
 
