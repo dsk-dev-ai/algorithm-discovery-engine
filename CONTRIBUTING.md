@@ -4,12 +4,13 @@ Thanks for your interest in contributing to the Algorithm Discovery Engine.
 
 ## Setup
 
-Requires Python >= 3.10 and [uv](https://docs.astral.sh/uv/).
+Requires Python >= 3.10 and [uv](https://docs.astral.sh/uv/), plus a JDK
+(>= 17), a C++17 compiler, and the Rust toolchain for the non-Python tiers.
 
 ```bash
 git clone https://github.com/dsk-dev-ai/algorithm-discovery-engine.git
 cd algorithm-discovery-engine
-uv sync --extra dev
+uv sync --group dev
 ```
 
 ## Quality gates
@@ -17,23 +18,43 @@ uv sync --extra dev
 Run the full check suite before submitting:
 
 ```bash
+python engine/runner.py check          # generated vectors in sync w/ the catalog
+python engine/runner.py build           # all four language tiers compile
+python engine/runner.py test            # catalog tests pass in all four languages
 uv run ruff check src tests
-uv run mypy src
-uv run pytest
+uv run mypy -p algo_discovery -p ads
+```
+
+### Per-language quick checks
+
+```bash
+# Java
+cd languages/java && javac -d out $(find src -name '*.java') && java -cp out ads.TestRunner
+
+# C++
+cd languages/cpp && g++ -std=c++17 -O2 -I include tests/test_runner.cpp -o build/runner && ./build/runner
+
+# Rust
+cd languages/rust && cargo test --quiet
 ```
 
 ## Process
 
 1. Branch from `main`: `feat/my-feature` or `fix/my-bug`.
-2. Add a hypothesis in `src/algo_discovery/hypotheses.py` with unit tests in
-   `tests/`.
-3. Document new hypotheses in the README.
+2. For a new problem: add vectors to `catalog/problems.json`, implement the
+   solution in **every** language tier (`src/ads/`, `languages/java/`,
+   `languages/cpp/`, `languages/rust/`), and regenerate vectors with
+   `python engine/gen_tests.py`.
+3. Add/keep unit tests: Python in `tests/`; Java/C++/Rust are covered by the
+   generated catalog runners in each `languages/*/`.
 4. Run the quality gates above.
-5. Commit with a Conventional Commit message and open a PR.
+5. Document behavior changes in the README.
+6. Commit with a Conventional Commit message and open a PR.
 
 ## PR checklist
 
-- [ ] `ruff check` passes
-- [ ] `mypy` passes (strict)
+- [ ] `python engine/runner.py check` passes
+- [ ] `python engine/runner.py test` passes (all tiers)
+- [ ] `ruff check` and `mypy` (strict) pass
 - [ ] Tests added/updated and passing
 - [ ] README updated if behavior changed

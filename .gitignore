@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Multi-language solving engine build artifacts
+languages/java/out/

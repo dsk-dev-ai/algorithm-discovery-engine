@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  quality:
+  python-quality:
     name: Ruff + mypy
     runs-on: ubuntu-latest
     steps:
@@ -20,9 +20,9 @@ jobs:
       - name: Lint
         run: uv run ruff check src tests
       - name: Type check
-        run: uv run mypy -p algo_discovery
+        run: uv run mypy -p algo_discovery -p ads
 
-  test:
+  python-test:
     name: Pytest (3.10, 3.12, 3.13)
     strategy:
       matrix:
@@ -37,3 +37,51 @@ jobs:
         run: uv sync --group dev
       - name: Test
         run: uv run pytest -q
+
+  vectors:
+    name: Generated vectors in sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify generated test vectors
+        run: python engine/gen_tests.py --check
+
+  java:
+    name: Java
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Compile and run catalog tests
+        working-directory: languages/java
+        run: |
+          javac -d out $(find src -name '*.java')
+          java -cp out ads.TestRunner
+
+  cpp:
+    name: C++
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run catalog tests
+        working-directory: languages/cpp
+        run: |
+          mkdir -p build
+          g++ -std=c++17 -O2 -I include tests/test_runner.cpp -o build/test_runner
+          ./build/test_runner
+
+  rust:
+    name: Rust
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run catalog tests
+        working-directory: languages/rust
+        run: cargo test --quiet

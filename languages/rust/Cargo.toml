@@ -1,0 +1,15 @@
+[package]
+name = "ads-rust"
+version = "0.1.0"
+edition = "2021"
+description = "Algorithms & data structures solving engine - Rust tier"
+license = "MIT"
+
+[dependencies]
+
+[lib]
+name = "ads"
+
+[profile.release]
+lto = true
+codegen-units = 1
