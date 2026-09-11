@@ -10,7 +10,7 @@ Requires Python >= 3.10 and [uv](https://docs.astral.sh/uv/), plus a JDK
 ```bash
 git clone https://github.com/dsk-dev-ai/algorithm-discovery-engine.git
 cd algorithm-discovery-engine
-uv sync --group dev
+uv sync --group dev --group docs
 ```
 
 ## Quality gates
@@ -23,7 +23,9 @@ python engine/runner.py build           # all four language tiers compile
 python engine/runner.py test            # catalog tests pass in all four languages
 python engine/runner.py discover        # synthesizer smoke pass (CI-friendly)
 uv run ruff check src tests
-uv run mypy -p algo_discovery -p ads -p synth
+uv run mypy -p algo_discovery -p ads -p synth -p gui
+uv run python -m gui --selftest
+uv run mkdocs build --strict
 ```
 
 ### Per-language quick checks

@@ -9,6 +9,8 @@
 [![Forks](https://img.shields.io/github/forks/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=github&logoColor=white)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/forks)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Last commit](https://img.shields.io/github/last-commit/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=git&logoColor=white)]()
+[![Docs](https://img.shields.io/badge/docs-live-blue?style=flat-square&logo=materialformkdocs&logoColor=white)](https://dsk-dev-ai.github.io/algorithm-discovery-engine/)
+[![GUI](https://img.shields.io/badge/available-gui_tkinter-blueviolet?style=flat-square)](#desktop-gui)
 [![Sponsor](https://img.shields.io/badge/%E2%9D%A4%EF%B8%8F-Sponsor-red?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/dsk-dev-ai)
 
 **Python** · **Java** · **C++** · **Rust**
@@ -38,10 +40,12 @@ game) from input/output examples alone — no APIs, no model calls.
   next-term predictions.
 - **Zero dependencies per language** — no framework, no package, no JIT magic; pure
   standard library in all four tiers.
+- **Desktop GUI** — a Tkinter app (`python -m gui`) built on the standard library only;
+  core logic is headless-tested in CI.
 - **Generated-then-committed test vectors** — identical tests enforced by CI in every
   language; a single `--check` keeps them in sync with the catalog.
 - **CI-green by default** — grid of Python 3.10–3.13, Java 21, GCC C++17, stable Rust,
-  plus a discovery-smoke job.
+  discovery-smoke, GUI-core smoke, and a strict docs build.
 
 ## Quick start
 
@@ -52,6 +56,7 @@ cd algorithm-discovery-engine
 python engine/runner.py test        # build + run the catalog suite in all 4 languages
 python engine/runner.py bench       # benchmark all tiers, side by side
 python engine/runner.py discover    # synthesize + verify algorithms from examples
+python -m gui                       # open the desktop app
 ```
 
 No install required — Python ≥ 3.10 and (for the non-Python tiers) a JDK, a C++17
@@ -154,13 +159,46 @@ explanation, and next-term prediction.
 uv run python -m algo_discovery 1 4 9 16
 ```
 
+## Desktop GUI
+
+A small **Tkinter** desktop app (no third-party runtime dependencies) wraps the
+three engines behind a clean dark-themed interface:
+
+```sh
+python -m gui                   # launch from the repo root
+python engine/runner.py gui     # same thing via the dispatcher
+ade-gui                         # if installed with pip/uv
+```
+
+| Tab               | What it does                                                           |
+| ----------------- | ---------------------------------------------------------------------- |
+| **Discover**      | Run the synthesizer (smoke/full), view the per-target verified table, open the report. |
+| **Pattern discovery** | Enter an integer sequence, discover ranked hypotheses with next-term predictions.    |
+| **Engine**        | Check vectors, run pytest, build all tiers, benchmark, open docs/GitHub links.       |
+
+Core logic lives in `gui/core.py` and is tested headlessly in CI (`-p gui` mypy
++ `pytest -q tests/test_gui.py`).
+
+## Documentation
+
+Full docs: **https://dsk-dev-ai.github.io/algorithm-discovery-engine/**
+
+Build locally:
+
+```sh
+uv sync --group docs
+uv run mkdocs serve          # live preview at http://127.0.0.1:8000
+```
+
 ## Development
 
 ```sh
-uv sync --group dev
-uv run pytest -q          # 118 tests (catalog + synthesizer)
+uv sync --group dev --group docs
+uv run pytest -q               # 118+ tests (catalog + synthesizer + GUI core)
 uv run ruff check src tests
-uv run mypy -p algo_discovery -p ads -p synth
+uv run mypy -p algo_discovery -p ads -p synth -p gui
+uv run python -m gui --selftest           # headless GUI smoke
+uv run mkdocs build --strict             # documentation builds cleanly
 python engine/runner.py check   # keep generated vectors in sync before committing
 ```
 
@@ -178,6 +216,8 @@ engine/runner.py                 build / test / benchmark / synthesize dispatche
 src/ads/                         Python solving engine (regular + advanced)
 src/algo_discovery/              pattern-discovery framework (original)
 src/synth/                       local algorithm synthesizer
+src/gui/                         Tkinter desktop app (stdlib only)
+docs/                            documentation site (MkDocs Material)
 languages/java/src/ads/          Java tier (+ TestRunner, Benchmark)
 languages/cpp/include/ads/       C++17 headers (+ tests, bench)
 languages/rust/src/              Rust tier (+ examples/benchmark.rs)
