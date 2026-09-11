@@ -13,6 +13,8 @@
 
 **Python** · **Java** · **C++** · **Rust**
 
+<img src=".github/social-preview.png" alt="algorithm-discovery-engine social preview" width="100%" />
+
 </div>
 
 ---
