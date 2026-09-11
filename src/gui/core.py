@@ -14,7 +14,19 @@ from typing import Any, cast
 from algo_discovery import DiscoveryEngine
 from synth import discovery as synth_discovery
 
-ROOT: Path = Path(__file__).resolve().parent.parent.parent
+
+def _find_catalog_root() -> Path:
+    """Locate the directory holding ``catalog/`` (repo or installed layout)."""
+    head = Path(__file__).resolve().parent
+    candidate = head
+    while candidate != candidate.parent:
+        if (candidate / "catalog" / "problems.json").exists():
+            return candidate
+        candidate = candidate.parent
+    raise FileNotFoundError("could not locate catalog/problems.json")
+
+
+ROOT: Path = _find_catalog_root()
 CATALOG_PATH: Path = ROOT / "catalog" / "problems.json"
 TARGETS_PATH: Path = ROOT / "catalog" / "discovery_targets.json"
 DISCOVERIES_DIR: Path = ROOT / "catalog" / "discoveries"

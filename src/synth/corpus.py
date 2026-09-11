@@ -13,7 +13,19 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+
+def _find_catalog_root() -> Path:
+    """Locate the directory holding ``catalog/`` (repo or installed layout)."""
+    head = Path(__file__).resolve().parent
+    candidate = head
+    while candidate != candidate.parent:
+        if (candidate / "catalog" / "discovery_targets.json").exists():
+            return candidate
+        candidate = candidate.parent
+    raise FileNotFoundError("could not locate catalog/discovery_targets.json")
+
+
+ROOT = _find_catalog_root()
 
 PARSE_DELIM = "|"
 

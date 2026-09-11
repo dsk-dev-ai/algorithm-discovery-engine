@@ -22,7 +22,7 @@ Every tier ships as pure standard-library code, and the repo is **CI-green by
 default**: Python 3.10–3.13, Java 21, GCC C++17, stable Rust, and a
 discovery-smoke job.
 
-!!! tip "New in v1.0.0"
+!!! tip "New in v1.0.1"
     A [desktop GUI](gui.md) built purely on the standard library (`python -m
     gui`) — discover patterns, run the synthesizer, and drive the engine
     without touching the terminal.
