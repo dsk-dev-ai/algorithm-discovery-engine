@@ -10,6 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Last commit](https://img.shields.io/github/last-commit/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=git&logoColor=white)]()
 [![Docs](https://img.shields.io/badge/docs-live-blue?style=flat-square&logo=materialformkdocs&logoColor=white)](https://dsk-dev-ai.github.io/algorithm-discovery-engine/)
+[![GHCR](https://img.shields.io/badge/container-ghcr.io-lightgrey?style=flat-square&logo=docker&logoColor=white)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/pkgs/container/algorithm-discovery-engine)
 [![GUI](https://img.shields.io/badge/available-gui_tkinter-blueviolet?style=flat-square)](#desktop-gui)
 [![Sponsor](https://img.shields.io/badge/%E2%9D%A4%EF%B8%8F-Sponsor-red?style=flat-square&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/dsk-dev-ai)
 
@@ -178,6 +179,18 @@ ade-gui                         # if installed with pip/uv
 
 Core logic lives in `gui/core.py` and is tested headlessly in CI (`-p gui` mypy
 + `pytest -q tests/test_gui.py`).
+
+## Container image
+
+Prebuilt on **GitHub Packages** (amd64 + arm64) — no install needed:
+
+```sh
+docker pull ghcr.io/dsk-dev-ai/algorithm-discovery-engine:v1.0.0
+docker run --rm ghcr.io/dsk-dev-ai/algorithm-discovery-engine:v1.0.0 --smoke
+```
+
+Tags: `latest`, per-version (`v1.0.0`), and per-commit (`sha-<hash>`). The image runs
+the local algorithm synthesizer by default; override with any `python -m` command.
 
 ## Documentation
 
