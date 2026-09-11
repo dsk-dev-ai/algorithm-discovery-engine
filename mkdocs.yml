@@ -1,0 +1,59 @@
+site_name: algorithm-discovery-engine
+site_description: >
+  Multi-language algorithms & data structures solving engine (Java, C++, Rust,
+  Python) with cross-language benchmarks, automated pattern discovery, and a
+  local synthesizer that rediscovers algorithms from examples.
+site_url: https://dsk-dev-ai.github.io/algorithm-discovery-engine/
+repo_url: https://github.com/dsk-dev-ai/algorithm-discovery-engine
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for automatic light/dark mode.
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Multi-language engine: engine.md
+  - Algorithm synthesis: synthesis.md
+  - Pattern discovery: patterns.md
+  - Desktop GUI: gui.md
+  - Contributing: contributing.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/dsk-dev-ai/algorithm-discovery-engine
+    - icon: fontawesome/solid/heart
+      link: https://github.com/sponsors/dsk-dev-ai
+
+copyright: MIT License &copy; dsk-dev-ai &mdash; built and maintained by
+  <a href="https://github.com/sponsors/dsk-dev-ai">NextGenAI Labs</a>.

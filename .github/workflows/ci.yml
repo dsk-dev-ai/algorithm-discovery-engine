@@ -20,7 +20,7 @@ jobs:
       - name: Lint
         run: uv run ruff check src tests
       - name: Type check
-        run: uv run mypy -p algo_discovery -p ads -p synth
+        run: uv run mypy -p algo_discovery -p ads -p synth -p gui
 
   python-test:
     name: Pytest (3.10, 3.12, 3.13)
@@ -98,3 +98,31 @@ jobs:
         run: uv sync --group dev
       - name: Run synth discover --smoke
         run: uv run python engine/runner.py discover
+
+  gui:
+    name: GUI core smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Sync deps
+        run: uv sync --group dev
+      - name: Headless GUI selftest
+        run: uv run python -m gui --selftest
+      - name: GUI core tests
+        run: uv run pytest -q tests/test_gui.py
+
+  docs:
+    name: Docs (strict build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Sync docs deps
+        run: uv sync --group docs
+      - name: Build docs
+        run: uv run mkdocs build --strict --site-dir site

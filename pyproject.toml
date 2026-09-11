@@ -1,6 +1,6 @@
 [project]
 name = "algorithm-discovery-engine"
-version = "0.3.0"
+version = "1.0.0"
 description = "Multi-language algorithms & data structures solving engine (Java, C++, Rust, Python) with cross-language benchmarks and a local AI synthesizer that rediscovers algorithms from examples."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -27,24 +27,29 @@ keywords = [
     "sequence-analysis",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Java",
     "Programming Language :: C++",
     "Programming Language :: Rust",
     "Topic :: Education",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Scientific/Engineering :: Mathematics",
 ]
+
+[project.scripts]
+ade-gui = "gui.app:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/algo_discovery", "src/ads", "src/synth"]
+packages = ["src/algo_discovery", "src/ads", "src/synth", "src/gui"]
 
 [tool.uv]
 package = true
@@ -54,6 +59,9 @@ dev = [
     "mypy>=1.10",
     "pytest>=8.0",
     "ruff>=0.5",
+]
+docs = [
+    "mkdocs-material>=9.5",
 ]
 
 [tool.ruff]

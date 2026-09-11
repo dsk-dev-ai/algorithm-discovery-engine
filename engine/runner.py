@@ -9,6 +9,7 @@ Commands:
     build       Compile every language tier (no execution).
     check       Verify committed test vectors are in sync with the catalog.
     discover    Run the algorithm synthesizer (smoke pass, ~2 min).
+    gui         Launch the Tkinter desktop app.
 """
 
 from __future__ import annotations
@@ -199,6 +200,12 @@ def cmd_discover_smoke() -> None:
     )
 
 
+def cmd_gui() -> None:
+    check([sys.executable, "-m", "gui", "--selftest"], ROOT, "gui selftest")
+    print("Launching GUI — close the window to exit.")
+    subprocess.run([sys.executable, "-m", "gui"], cwd=ROOT, check=False)
+
+
 def main() -> None:
     if len(sys.argv) < 2:
         print(__doc__)
@@ -210,6 +217,7 @@ def main() -> None:
         "build": cmd_build,
         "check": cmd_check,
         "discover": cmd_discover_smoke,
+        "gui": cmd_gui,
     }
     handlers[command]()
 
