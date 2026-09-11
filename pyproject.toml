@@ -1,6 +1,6 @@
 [project]
 name = "algorithm-discovery-engine"
-version = "1.0.0"
+version = "1.0.1"
 description = "Multi-language algorithms & data structures solving engine (Java, C++, Rust, Python) with cross-language benchmarks and a local AI synthesizer that rediscovers algorithms from examples."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -51,6 +51,10 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/algo_discovery", "src/ads", "src/synth", "src/gui"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"catalog/problems.json" = "catalog/problems.json"
+"catalog/discovery_targets.json" = "catalog/discovery_targets.json"
+
 [tool.uv]
 package = true
 
@@ -83,7 +87,7 @@ explicit_package_bases = true
 mypy_path = "src"
 
 [tool.hatch.build.targets.sdist]
-include = ["src", "tests", "README.md", "LICENSE"]
+include = ["src", "tests", "catalog", "engine", "README.md", "LICENSE"]
 
 [[tool.mypy.overrides]]
 module = "tests.*"

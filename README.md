@@ -185,11 +185,11 @@ Core logic lives in `gui/core.py` and is tested headlessly in CI (`-p gui` mypy
 Prebuilt on **GitHub Packages** (amd64 + arm64) — no install needed:
 
 ```sh
-docker pull ghcr.io/dsk-dev-ai/algorithm-discovery-engine:v1.0.0
-docker run --rm ghcr.io/dsk-dev-ai/algorithm-discovery-engine:v1.0.0 --smoke
+docker pull ghcr.io/dsk-dev-ai/algorithm-discovery-engine:v1.0.1
+docker run --rm ghcr.io/dsk-dev-ai/algorithm-discovery-engine:v1.0.1 --smoke
 ```
 
-Tags: `latest`, per-version (`v1.0.0`), and per-commit (`sha-<hash>`). The image runs
+Tags: `latest`, per-version (`v1.0.1`), and per-commit (`sha-<hash>`). The image runs
 the local algorithm synthesizer by default; override with any `python -m` command.
 
 ## Documentation
