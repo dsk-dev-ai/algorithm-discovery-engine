@@ -5,7 +5,7 @@
 **One catalog, four languages, zero dependencies — and a synthesizer that rediscovers the algorithms for you.**
 
 [![CI](https://github.com/dsk-dev-ai/algorithm-discovery-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/actions/workflows/ci.yml)
-[![Stars](https://img.shields.io/github/stars/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=github&logoColor=white)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/stargazers)
+[![Stars](https://img.shields.io/github/stars/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=github&logoColor=white)](https://github.com/dsk-dev-ai/algorithm-discovery-engine)
 [![Forks](https://img.shields.io/github/forks/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=github&logoColor=white)](https://github.com/dsk-dev-ai/algorithm-discovery-engine/forks)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Last commit](https://img.shields.io/github/last-commit/dsk-dev-ai/algorithm-discovery-engine?style=flat-square&logo=git&logoColor=white)]()
